@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 import fire
 from PyInquirer import prompt
+import pretty_errors
+from rich import print
 
 
 class IngestionStage(object):
@@ -12,7 +14,7 @@ class DigestionStage(object):
     def __init__(self):
         self.satiated = False
 
-    def run(self, volume: int = 0) -> str:
+    def run(self, volume: int) -> str:
         questions = [
             {
                 'type': 'input',
@@ -45,7 +47,9 @@ class DigestionStage(object):
         return ' '.join(['Burp!'] * volume)
 
     def status(self):
-        return 'Satiated.' if self.satiated else 'Not satiated.'
+        print('[bold green]Satiated.[/bold green]') if self.satiated else print(
+            '[bold red]Not satiated.[/bold red]')
+        return 'Status complete'
 
 
 class Pipeline(object):
@@ -54,9 +58,9 @@ class Pipeline(object):
         self.ingestion = IngestionStage()
         self.digestion = DigestionStage()
 
-    def run(self):
+    def run(self, volume: int = 1):
         print(self.ingestion.run())
-        print(self.digestion.run())
+        print(self.digestion.run(volume=volume))
         print(self.digestion.status())
         return 'Pipeline complete'
 
